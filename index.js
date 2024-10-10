@@ -102,7 +102,6 @@ app.get('/deviation', async (req, res) => {
 
   res.json({ deviation: stdDeviation });
 });
-
 // Start the server
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
