@@ -1,4 +1,3 @@
-// index.js
 const express = require('express');
 const mongoose = require('mongoose');
 const axios = require('axios');
@@ -7,11 +6,10 @@ const schedule = require('node-schedule');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// MongoDB setup
+
 const mongoURI = 'mongodb+srv://420206:g9GqjVLMH1KzcCZc@cluster0.q8abu.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0%20'; // Replace with your MongoDB connection string
 mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true });
 
-// Define a schema and model for crypto prices
 const cryptoPriceSchema = new mongoose.Schema({
   name: String,
   current_price: Number,
@@ -22,7 +20,6 @@ const cryptoPriceSchema = new mongoose.Schema({
 
 const CryptoPrice = mongoose.model('CryptoPrice', cryptoPriceSchema);
 
-// Fetch data from CoinGecko API
 const fetchCryptoData = async () => {
   const url = 'https://api.coingecko.com/api/v3/simple/price';
   const params = {
@@ -41,7 +38,6 @@ const fetchCryptoData = async () => {
   }
 };
 
-// Store data in the MongoDB database
 const storeDataInDb = async (data) => {
   for (const coin in data) {
     const details = data[coin];
@@ -55,7 +51,6 @@ const storeDataInDb = async (data) => {
   }
 };
 
-// Job to run every 2 hours
 const job = async () => {
   console.log('Fetching data from CoinGecko...');
   const data = await fetchCryptoData();
@@ -69,10 +64,8 @@ const job = async () => {
   }
 };
 
-// Schedule the job to run every 2 hours
-schedule.scheduleJob('0 */2 * * *', job); // Runs every 2 hours at minute 0
+schedule.scheduleJob('0 */2 * * *', job); 
 
-// API to get the latest stats for a requested cryptocurrency
 app.get('/stats', async (req, res) => {
   const { coin } = req.query;
   if (!coin) return res.status(400).json({ error: 'Coin is required' });
@@ -87,7 +80,6 @@ app.get('/stats', async (req, res) => {
   });
 });
 
-// API to get the standard deviation of the last 100 records
 app.get('/deviation', async (req, res) => {
   const { coin } = req.query;
   if (!coin) return res.status(400).json({ error: 'Coin is required' });
@@ -102,7 +94,7 @@ app.get('/deviation', async (req, res) => {
 
   res.json({ deviation: stdDeviation });
 });
-// Start the server
+
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
